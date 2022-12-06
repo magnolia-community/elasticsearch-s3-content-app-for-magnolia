@@ -1,0 +1,1 @@
+# elasticsearch-s3-content-app-for-magnolia
