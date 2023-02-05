@@ -1,4 +1,5 @@
 
+
 [![Build Status](https://app.travis-ci.com/andreapagliacci/magnolia-cms-content-app-elasticsearch-s3.svg?branch=main)](https://app.travis-ci.com/andreapagliacci/magnolia-cms-content-app-elasticsearch-s3)
 # What's problem resolve?
 The app permits you to connect (now, in the future I expand the source connectable) to :
@@ -15,21 +16,34 @@ For more informations see [How to implements new source](https://www.andreapagli
 For use that app, add dependency in your pom.xml:
 
     <dependency>
-	  <groupId>net.seniorsoftwareengineer</groupId>
-	  <artifactId>magnolia-cms-content-app-elasticsearch</artifactId>
-	  <version>1.1</version>
-	</dependency>
+		<groupId>net.seniorsoftwareengineer</groupId>
+		<artifactId>magnolia-cms-content-app-elasticsearch</artifactId>
+		<version>1.1</version>
+    </dependency>
 
-Add in your pom.xml the link to repository
-```xml
-<distributionManagement>
-   <repository>
-     <id>github</id>
-     <name>GitHub OWNER Apache Maven Packages</name>
-     <url>https://maven.pkg.github.com/AndreaPaglio/magnolia-cms-content-app-elasticsearch-s3</url>
-   </repository>
-</distributionManagement>
-```
+On settings.xml we must add for authorizing access:
+	
+
+    <server>
+    		<id>github</id>
+    		<username>andreapagliacci</username>
+    		<password>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</password>
+    </server>
+
+and settings url where are saved package:
+	
+
+    <repository>
+    		<id>github</id>
+    		<url>https://maven.pkg.github.com/magnolia-community/elasticsearch-s3-content-app-for-magnolia</url>
+    		<releases>
+    			<enabled>true</enabled>
+    		</releases>
+    		<snapshots>
+    			<enabled>true</enabled>
+    		</snapshots>
+    </repository>
+
 Build your solution with:
 
     mvn install
