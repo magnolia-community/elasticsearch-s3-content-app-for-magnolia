@@ -1,0 +1,110 @@
+<module>
+	<name>whitelabel-webapp</name>
+	<displayName>${project.name}</displayName>
+	<description>${project.description}</description>
+	<class>com.whitelabel.app.manageES.WhitelabelModuleCoreVersionHandler</class>
+	<versionHandler>com.whitelabel.app.manageES.WhitelabelModuleCoreVersionHandler</versionHandler>
+	<version>${project.version}</version>
+	<components>
+		<id>app-manageES-browser</id>
+		<component>
+			<type>com.whitelabel.app.custom.interfaces.CustomListenerPresenter</type>
+			<implementation>com.whitelabel.app.generic.ui.service.GenericBrowserPresenter</implementation>
+			<scope>singleton</scope>
+		</component>
+		<component>
+			<type>com.whitelabel.app.generic.service.RepositoryService</type>
+			<implementation>com.whitelabel.app.generic.service.RepositoryServiceImpl</implementation>
+			<scope>singleton</scope>
+		</component>
+		<component>
+			<type>com.whitelabel.app.custom.interfaces.CustomView</type>
+			<implementation>com.whitelabel.app.generic.ui.service.GenericViewImpl</implementation>
+			<scope>singleton</scope>
+		</component>
+		<!-- START S3 Implementation-->
+		<component>
+			<type>com.whitelabel.app.aws.s3.S3Delegate</type>
+			<implementation>com.whitelabel.app.aws.s3.S3Delegate</implementation>
+			<scope>singleton</scope>
+		</component>
+		<component>
+			<type>com.whitelabel.app.aws.s3.S3Connection</type>
+			<implementation>com.whitelabel.app.aws.s3.S3Connection</implementation>
+			<scope>singleton</scope>
+		</component>
+		<!-- END S3 Implementation-->
+		<!-- START ElasticSearch Implementation-->
+		<component>
+			<type>com.whitelabel.app.elasticsearch.ElasticSearchDelegate</type>
+			<implementation>com.whitelabel.app.elasticsearch.ElasticSearchDelegate</implementation>
+			<scope>singleton</scope>
+		</component>
+		<component>
+			<type>com.whitelabel.app.elasticsearch.ElasticSearchConnection</type>
+			<implementation>com.whitelabel.app.elasticsearch.ElasticSearchConnection</implementation>
+			<scope>singleton</scope>
+		</component>
+		<!-- END ElasticSearch Implementation-->
+		<component>
+			<type>com.whitelabel.app.generic.utils.FactoryConverter</type>
+			<implementation>com.whitelabel.app.generic.utils.FactoryConverter</implementation>
+			<scope>singleton</scope>
+		</component>
+		<component>
+			<type>com.whitelabel.app.custom.interfaces.CustomContainer</type>
+			<implementation>com.whitelabel.app.generic.connector.GenericContainer</implementation>
+			<scope>singleton</scope>
+		</component>
+		<component>
+			<type>com.whitelabel.app.generic.ui.service.UiEventAction</type>
+			<implementation>com.whitelabel.app.generic.ui.service.UiEventActionImpl</implementation>
+		</component>
+		<component>
+			<type>com.whitelabel.app.generic.connector.FactoryContainer</type>
+			<implementation>com.whitelabel.app.generic.connector.FactoryContainer</implementation>
+			<scope>singleton</scope>
+		</component>
+
+		
+		<component>
+			<type>com.whitelabel.app.event.service.TableEventService</type>
+			<implementation>com.whitelabel.app.event.service.TableEventServiceImpl</implementation>
+		</component>
+		<component>
+			<type>com.whitelabel.app.custom.interfaces.Listener</type>
+			<implementation>com.whitelabel.app.custom.interfaces.CustomSenderEventManager</implementation>
+		</component>
+		<component>
+			<type>com.whitelabel.app.custom.interfaces.CustomTwoColumnView</type>
+			<implementation>com.whitelabel.app.generic.ui.service.GenericBrowserViewImpl</implementation>
+			<scope>singleton</scope>
+		</component>
+
+		<component>
+			<type>com.whitelabel.app.custom.interfaces.ListSearchViewAppInterface</type>
+			<implementation>com.whitelabel.app.generic.ui.service.GenericListViewImpl</implementation>
+			<scope>singleton</scope>
+		</component>
+
+		<component>
+			<type>com.whitelabel.app.generic.ui.service.GenericListPresenter</type>
+			<implementation>com.whitelabel.app.generic.ui.service.GenericListPresenter</implementation>
+			<scope>singleton</scope>
+		</component>
+		<component>
+			<type>com.whitelabel.app.generic.ui.dialog.ActionBarService</type>
+			<implementation>com.whitelabel.app.generic.ui.dialog.ActionBarServiceImpl</implementation>
+		</component>
+		<component>
+			<type>com.whitelabel.app.generic.service.RepositoryService</type>
+			<implementation>com.whitelabel.app.generic.service.RepositoryServiceImpl</implementation>
+			<scope>singleton</scope>
+		</component>
+		<component>
+			<type>com.whitelabel.app.generic.service.LogService</type>
+			<implementation>com.whitelabel.app.generic.service.LogServiceImpl</implementation>
+			<scope>singleton</scope>
+		</component>
+	</components>
+</module>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+	<Appenders>
+		<Elasticsearch name="elasticsearchAsyncBatch">
+			<IndexName indexName="test" />
+			<!-- <RollingIndexName indexName="test" pattern="yyyy-MM-dd-HH" timeZone="Europe/Warsaw" 
+				/> -->
+			<ThresholdFilter level="${magnolia.log.level}"
+				onMatch="ACCEPT" />
+			<JacksonJsonLayout><!--singleThread="true" afterburner="true" -->
+				<VirtualProperty name="hostname"
+					value="${magnolia.log.name-server}" dynamic="true" />
+				<!-- <VirtualProperty name="ctxVariable" value="$${ctx:myFavouriteVariable:-notSupportedWithAsyncLogger}" 
+					dynamic="true" /> <PooledItemSourceFactory poolName="itemPool" itemSizeInBytes="1024" 
+					initialPoolSize="6000" monitored="true" monitorTaskInterval="100" resizeTimeout="500"> 
+					<UnlimitedResizePolicy resizeFactor="0.6" /> </PooledItemSourceFactory> -->
+			</JacksonJsonLayout>
+			<AsyncBatchDelivery batchSize="1"
+				deliveryInterval="1" shutdownDelatMillis="10000">
+				<IndexTemplate name="test"
+					path="classpath:indexTemplate.json" />
+				<JestHttp
+					serverUris="${magnolia.log.elastic-search-server-ip}" />
+			</AsyncBatchDelivery>
+		</Elasticsearch>
+		<Console name="console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d %-5p %-50.50c: %m%n" />
+		</Console>
+		<RollingFile name="sync-log-debug"
+			fileName="${magnolia.logs.dir}/magnolia-debug.log"
+			filePattern="${magnolia.logs.dir}/magnolia-debug-%i.log"
+			append="true">
+			<PatternLayout
+				pattern="%-5p %c %d{dd.MM.yyyy HH:mm:ss} -- %m%n" />
+			<ThresholdFilter level="DEBUG" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="5MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+		<Async name="log-debug">
+			<AppenderRef ref="sync-log-debug" />
+		</Async>
+
+		<!-- Log Error -->
+
+		<RollingFile name="sync-log-error"
+			fileName="${magnolia.logs.dir}/magnolia-error.log"
+			filePattern="${magnolia.logs.dir}/magnolia-error-%i.log"
+			append="true">
+			<PatternLayout
+				pattern="%-5p %c %d{dd.MM.yyyy HH:mm:ss} -- %m%n" />
+			<ThresholdFilter level="ERROR" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="5MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+		<Async name="log-error">
+			<AppenderRef ref="sync-log-error" />
+		</Async>
+		<RollingFile name="sync-log-publishing"
+			fileName="${magnolia.logs.dir}/magnolia-publishing.log"
+			filePattern="${magnolia.logs.dir}/magnolia-publishing-%i.log"
+			append="true">
+			<PatternLayout
+				pattern="%-5p %c %d{dd.MM.yyyy HH:mm:ss} -- %m%n" />
+			<ThresholdFilter level="ERROR" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="5MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+		<Async name="log-publishing">
+			<AppenderRef ref="sync-log-publishing" />
+		</Async>
+		<File name="log-bootstrap"
+			fileName="${magnolia.logs.dir}/bootstrap.log">
+			<PatternLayout
+				pattern="%-5p %d{dd.MM.yyyy HH:mm:ss}  %m%n" />
+		</File>
+		<RollingFile name="sync-log-access"
+			fileName="${magnolia.logs.dir}/magnolia-access.log"
+			filePattern="${magnolia.logs.dir}/magnolia-access-%i.log"
+			append="true">
+			<PatternLayout pattern="%d{dd.MM.yyyy HH:mm:ss}%m%n" />
+			<ThresholdFilter level="ERROR" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="5MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+		<Async name="log-access">
+			<AppenderRef ref="sync-log-access" />
+		</Async>
+		<RollingFile name="sync-log-audit"
+			fileName="${magnolia.logs.dir}/magnolia-audit.log"
+			filePattern="${magnolia.logs.dir}/magnolia-audit-%i.log"
+			append="true">
+			<PatternLayout pattern="%d{dd.MM.yyyy HH:mm:ss}%m%n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="5MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+		<Async name="log-audit">
+			<AppenderRef ref="sync-log-audit" />
+		</Async>
+		<RollingFile name="sync-log-form"
+			fileName="${magnolia.logs.dir}/magnolia-form.log"
+			filePattern="${magnolia.logs.dir}/magnolia-form-%i.log" append="true">
+			<PatternLayout pattern="%d{dd.MM.yyyy HH:mm:ss}%m%n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="5MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+		<Async name="log-form">
+			<AppenderRef ref="sync-log-form" />
+		</Async>
+		<RollingFile name="sync-log-gdpr"
+			fileName="${magnolia.logs.dir}/magnolia-gdpr.log"
+			filePattern="${magnolia.logs.dir}/magnolia-gdpr-%i.log" append="true">
+			<PatternLayout pattern="%d{dd.MM.yyyy HH:mm:ss}%m%n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="5MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+		<Async name="log-gdpr">
+			<AppenderRef ref="sync-log-gdpr" />
+		</Async>
+	</Appenders>
+
+	<Loggers>
+		<!-- Magnolia categories -->
+		<Logger name="info.magnolia" level="INFO" />
+		<Logger name="info.magnolia.cms.beans.config.MIMEMapping"
+			level="WARN" />
+
+		<!-- Publishing - additivity is true so logs also go to sub-categories' 
+			appenders -->
+		<Logger name="info.magnolia.publishing" level="INFO"
+			additivity="true">
+			<AppenderRef ref="log-publishing" />
+		</Logger>
+
+		<!-- bootstrapping -->
+		<Logger name="info.magnolia.importexport.Bootstrapper"
+			level="INFO" additivity="true">
+			<AppenderRef ref="log-bootstrap" />
+		</Logger>
+
+		<!-- Custom log categories - additivity is false so logs only go to the 
+			appenders configured here -->
+		<Logger name="log-access" additivity="false">
+			<AppenderRef ref="log-access" />
+		</Logger>
+		<Logger name="log-audit" additivity="false">
+			<AppenderRef ref="log-audit" />
+		</Logger>
+		<Logger name="log-form" additivity="false">
+			<AppenderRef ref="log-form" />
+		</Logger>
+		<Logger name="it.ngi.magnolia.ws.rest.security.GDPRFilter"
+			level="INFO" additivity="false">
+			<AppenderRef ref="log-gdpr" />
+		</Logger>
+
+		<!-- External libraries -->
+		<Logger name="org" level="WARN" />
+		<Logger name="org.apache.jackrabbit" level="WARN" />
+		<Logger name="org.reflections" level="ERROR" />
+		<Logger name="com" level="WARN" />
+		<Logger name="net" level="WARN" />
+		<Logger name="freemarker" level="WARN" />
+
+		<Root level="ALL">
+			<AppenderRef ref="elasticsearchAsyncBatch" />
+			<AppenderRef ref="console" />
+		</Root>
+	</Loggers>
+
+</Configuration>
