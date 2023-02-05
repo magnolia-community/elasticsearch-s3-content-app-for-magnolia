@@ -130,7 +130,7 @@
 		<repository>
 			<id>github</id>
 			<name>GitHub OWNER Apache Maven Packages</name>
-			<url>https://maven.pkg.github.com/AndreaPaglio/magnolia-cms-content-app-elasticsearch-s3</url>
+			<url>https://maven.pkg.github.com/magnolia-community/elasticsearch-s3-content-app-for-magnolia</url>
 		</repository>
 	</distributionManagement>
 	<build>
