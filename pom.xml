@@ -5,9 +5,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.seniorsoftwareengineer</groupId>
 	<artifactId>magnolia-cms-content-app-elasticsearch</artifactId>
-	<name>whitelabel: webapp</name>
+	<name>ElasticSearch-S3-Content-app-for-Magnolia</name>
 	<packaging>jar</packaging>
-	<version>1.1</version>
+	<version>1.1.2</version>
 
 	<properties>
 		<magnoliaBundleVersion>6.2.8</magnoliaBundleVersion>
