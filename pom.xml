@@ -137,6 +137,18 @@
 		<!-- default resources configuration which will filter the module descriptor -->
 		<resources>
 			<resource>
+						<directory>src/main/java</directory>
+						<includes>
+							<include>**/*.java</include>
+						</includes>
+				</resource>
+				<resource>
+						<directory>src/main/resources</directory>
+						<includes>
+							<include>**/*.xml</include>
+						</includes>
+				</resource>
+			<resource>
 				<directory>src/main/resources</directory>
 				<includes>
 					<include>**/*</include>
@@ -151,20 +163,6 @@
 			</resource>
 		</resources>
 		<plugins>
-			<resources> 
-				<resource>
-						<directory>src/main/java</directory>
-						<includes>
-							<include>**/*.java</include>
-						</includes>
-				</resource>
-				<resource>
-						<directory>src/main/resources</directory>
-						<includes>
-							<include>**/*.xml</include>
-						</includes>
-				</resource>
-			</resources>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
