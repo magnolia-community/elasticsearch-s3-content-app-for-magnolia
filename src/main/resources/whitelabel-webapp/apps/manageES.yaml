@@ -5,13 +5,13 @@ class: info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor
 subApps:
   browser:  
     label: Manage source content app
-    subAppClass: com.whitelabel.app.manageES.ManageElasticSearchSubApp
+    subAppClass: info.magnolia.forge.universalcontent.app.manageES.ManageElasticSearchSubApp
     class: info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor
     workbench:
       contentViews:
          - name: list
-           class: com.whitelabel.app.generic.ui.service.GenericListPresenterDefinition
+           class: info.magnolia.forge.universalcontent.app.generic.ui.service.GenericListPresenterDefinition
          - name: search
-           class: com.whitelabel.app.generic.connector.GenericPresenterConnectorDefinition
+           class: info.magnolia.forge.universalcontent.app.generic.connector.GenericPresenterConnectorDefinition
     contentConnector:
-      class: com.whitelabel.app.generic.ui.service.GenericContentConnectorDefinition
+      class: info.magnolia.forge.universalcontent.app.generic.ui.service.GenericContentConnectorDefinition
