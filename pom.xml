@@ -137,6 +137,12 @@
 		<!-- default resources configuration which will filter the module descriptor -->
 		<resources>
 			<resource>
+	                <directory>src/main/java</directory>
+	                <includes>
+	                    <include>**/*.java</include>
+	                </includes>
+	        </resource>
+			<resource>
 				<directory>src/main/resources</directory>
 				<includes>
 					<include>**/*</include>
