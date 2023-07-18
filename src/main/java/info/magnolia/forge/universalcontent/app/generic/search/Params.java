@@ -13,6 +13,7 @@ import com.google.gson.annotations.Expose;
 
 import info.magnolia.forge.universalcontent.app.generic.entity.GenericItem;
 import info.magnolia.forge.universalcontent.app.generic.utils.GenericConstants;
+import info.magnolia.forge.universalcontent.elasticsearch.beans.SearchRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -48,6 +49,8 @@ public class Params implements Serializable {
 	private RelevanceSearch relevanceSearch;
 
 	private Class<? extends GenericItem> classType;
+	@Expose
+	private SearchRequest searchRequest;
 
 	/**
 	 * Instantiates a new params ES.
@@ -59,6 +62,7 @@ public class Params implements Serializable {
 		offset = GenericConstants.SEARCH_PARAMS_DEFAULT_OFFSET_PAGE;
 		relevanceSearch = new RelevanceSearch();
 		orders = new HashMap<>();
+		searchRequest = new SearchRequest();
 	}
 
 	/**
@@ -91,7 +95,7 @@ public class Params implements Serializable {
 			}
 		}
 		return "Params [fields=" + printFields + ", orders=" + orders + ", sizePage=" + sizePage + ", size=" + size
-				+ ", offset=" + offset + "]";
+				+ ", offset=" + offset + ", searchRequest=" + searchRequest + "]";
 	}
 
 }

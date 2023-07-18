@@ -103,7 +103,6 @@ public class CustomTable extends MagnoliaTable {
 				this.setCaptionAsHtml(true);
 			}
 			MgnlContext.getWebContext().getRequest().getSession().removeAttribute("SEARCH");
-
 		} catch (Exception e) {
 			serviceContainer.getLogService().logger(LogStatus.ERROR,
 					"Exception caught reading products search results within table", CustomTable.class, e);

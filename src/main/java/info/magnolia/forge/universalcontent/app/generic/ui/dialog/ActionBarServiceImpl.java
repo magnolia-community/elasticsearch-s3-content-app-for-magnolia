@@ -102,6 +102,9 @@ public class ActionBarServiceImpl implements ActionBarService {
 	/** The sub app context. */
 	private SubAppContext subAppContext;
 
+	public ActionBarServiceImpl() {
+	}
+
 	/**
 	 * Execute default action.
 	 */

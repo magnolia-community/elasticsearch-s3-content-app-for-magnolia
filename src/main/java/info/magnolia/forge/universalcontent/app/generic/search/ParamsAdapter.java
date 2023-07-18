@@ -4,6 +4,9 @@
 package info.magnolia.forge.universalcontent.app.generic.search;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -40,6 +43,7 @@ public class ParamsAdapter {
 	public ParamsAdapter(Params params, RepositoryService repositoryService) {
 		builderParams = GenericParamsBuilder.createSearch(repositoryService).params(params);
 		this.params = params;
+		this.repositoryService = repositoryService;
 	}
 
 	/**
@@ -48,6 +52,18 @@ public class ParamsAdapter {
 	 * @return the params ES
 	 */
 	private Params setSizeFullTextFromFilterParams() {
+		if (repositoryService.getCustomContainer() != null
+				&& repositoryService.getCustomContainer().getContentConnector() != null
+				&& repositoryService.getCustomContainer().getContentConnector().get() != null
+				&& repositoryService.getCustomContainer().getContentConnector().get().getPropertyIds() != null) {
+			Collection<?> propertyIds = repositoryService.getCustomContainer().getContentConnector().get()
+					.getPropertyIds();
+			List<String> properties = propertyIds.stream().map(property -> {
+				return (String) property;
+			}).collect(Collectors.toList());
+			builderParams.propertyColumns(properties);
+		}
+
 		if (builderParams.get().getFields() != null) {
 			try {
 				builderParams.size(Integer
@@ -59,6 +75,7 @@ public class ParamsAdapter {
 			try {
 				builderParams.fullTextSearch(
 						(String) builderParams.getField(GenericConstants.SEARCH_PARAMS_FULLTEXT_SEARCH));
+				params.setSearchRequest(builderParams.get().getSearchRequest());
 			} catch (Exception e) {
 				builderParams.fullTextSearch("");
 			}
@@ -98,15 +115,18 @@ public class ParamsAdapter {
 		if (component instanceof Upload) {
 			Upload upload = (Upload) component;
 			Object file = upload.getData();
-			if (((info.magnolia.forge.universalcontent.app.generic.ui.FileUploader) upload.getReceiver()).getFile() != null
+			if (((info.magnolia.forge.universalcontent.app.generic.ui.FileUploader) upload.getReceiver())
+					.getFile() != null
 					&& ((info.magnolia.forge.universalcontent.app.generic.ui.FileUploader) upload.getReceiver()) != null
 					&& upload.getId() != null) {
-				File fileContent = ((info.magnolia.forge.universalcontent.app.generic.ui.FileUploader) upload.getReceiver()).getFile();
+				File fileContent = ((info.magnolia.forge.universalcontent.app.generic.ui.FileUploader) upload
+						.getReceiver()).getFile();
 				if (upload.getId() != null && fileContent != null) {
 					builderParams.addField(upload.getId(), fileContent);
 				}
 			}
 		}
+
 		params = setSizeFullTextFromFilterParams();
 		return params;
 	}

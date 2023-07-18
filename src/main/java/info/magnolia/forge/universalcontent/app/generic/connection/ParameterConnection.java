@@ -10,5 +10,4 @@ import lombok.Data;
 public class ParameterConnection implements Serializable {
 	private String server;
 	private String port;
-
 }

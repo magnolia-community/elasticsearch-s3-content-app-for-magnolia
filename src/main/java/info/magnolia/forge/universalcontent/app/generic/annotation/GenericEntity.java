@@ -28,4 +28,6 @@ public @interface GenericEntity {
 	 * @return the string
 	 */
 	public String fieldId() default "";
+
+	public String workspace() default "";
 }

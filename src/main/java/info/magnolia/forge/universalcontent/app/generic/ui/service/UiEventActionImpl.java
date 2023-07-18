@@ -90,6 +90,10 @@ public class UiEventActionImpl implements UiEventAction {
 		this.listener = listener;
 	}
 
+	public UiEventActionImpl() {
+		super();
+	}
+
 	/**
 	 * Click on search.
 	 *
@@ -211,11 +215,10 @@ public class UiEventActionImpl implements UiEventAction {
 			Params params = fillParamsItem();
 
 			Class<? extends GenericDelegate> classType = serviceContainer.getConverterClass().getClassItem(params,
-					params.getFields().get("source"), GenericDelegate.class);
+					params.getFields().get(GenericConstants.SELECT_SOURCE), GenericDelegate.class);
 			GenericDelegate delegate = serviceContainer.getUiService().getComponentProvider().getComponent(classType);
 			Class classParameterConnection = delegate.getClass().getAnnotation(DelegateImplementation.class)
 					.parameterClass();
-			;
 			GenericItem createInstanceFromClassAndValues;
 			try {
 				ParameterConnection p = null;
@@ -224,9 +227,10 @@ public class UiEventActionImpl implements UiEventAction {
 				}
 				ParameterConnection parameterConnection = serviceContainer.getConverterClass()
 						.createInstanceFromClassAndValues(classParameterConnection, params, p);
-
+				delegate.getConnection().setElasticSearchModule(serviceContainer.getElasticSearchModule());
 				delegate.getConnection().setParams(parameterConnection);
 				delegate.getConnection().connect();
+				customContainer.getContentConnector().get().setQueryDelegate(delegate);
 			} catch (Exception e) {
 				log.error("Click on source connect", e);
 				delegate.setConnection(null);
@@ -272,6 +276,8 @@ public class UiEventActionImpl implements UiEventAction {
 						.nameTab(GenericConstants.TAB_NAME_CONFIGURATION, GenericConstants.TAB_GROUP_ITEM_MANAGE);
 
 				serviceContainer.getContentConnector().setQueryDelegate(delegate);
+				customContainer.getContentConnector().get().setQueryDelegate(delegate);
+				customContainer.getGenericContentConnector().setQueryDelegate(delegate);
 				CustomUi<CustomFieldFilter> layout = customUI.createFieldsFromTab(
 						GenericConstants.TAB_NAME_CONFIGURATION, allFields, GenericConstants.GROUP_FILTER_ID,
 						createField, clickOnSource);

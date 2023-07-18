@@ -145,14 +145,26 @@ public class GenericResultSet<T extends GenericItem> implements CustomResultSet 
 //				Get id
 				T hit = results.get(rowCount);
 
-				java.lang.reflect.Field fieldID = hit.getClass().getDeclaredField(index.fieldId());
-				fieldID.setAccessible(true);
-				value = fieldID.get(hit);
+				try {
+					java.lang.reflect.Field fieldID = hit.getClass().getDeclaredField(index.fieldId());
+					fieldID.setAccessible(true);
+					value = fieldID.get(hit);
+				} catch (Exception e) {
+					java.lang.reflect.Field fieldID = hit.getClass().getSuperclass().getDeclaredField(index.fieldId());
+					fieldID.setAccessible(true);
+					value = fieldID.get(hit);
+				}
 			} else {
 //				Get value from columnLabel
-				java.lang.reflect.Field field = obj.getClass().getDeclaredField(columnLabel);
-				field.setAccessible(true);
-				value = field.get(obj);
+				try {
+					java.lang.reflect.Field field = obj.getClass().getDeclaredField(columnLabel);
+					field.setAccessible(true);
+					value = field.get(obj);
+				} catch (Exception e) {
+					java.lang.reflect.Field field = obj.getClass().getSuperclass().getDeclaredField(columnLabel);
+					field.setAccessible(true);
+					value = field.get(obj);
+				}
 			}
 			return value;
 		} catch (IllegalArgumentException | IllegalAccessException e) {

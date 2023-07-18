@@ -22,7 +22,7 @@
 			<implementation>info.magnolia.forge.universalcontent.app.generic.ui.service.GenericViewImpl</implementation>
 			<scope>singleton</scope>
 		</component>
-		<!-- START S3 Implementation-->
+		<!-- START S3 Implementation -->
 		<component>
 			<type>info.magnolia.forge.universalcontent.app.aws.s3.S3Delegate</type>
 			<implementation>info.magnolia.forge.universalcontent.app.aws.s3.S3Delegate</implementation>
@@ -33,8 +33,8 @@
 			<implementation>info.magnolia.forge.universalcontent.app.aws.s3.S3Connection</implementation>
 			<scope>singleton</scope>
 		</component>
-		<!-- END S3 Implementation-->
-		<!-- START ElasticSearch Implementation-->
+		<!-- END S3 Implementation -->
+		<!-- START ElasticSearch Implementation -->
 		<component>
 			<type>info.magnolia.forge.universalcontent.app.elasticsearch.ElasticSearchDelegate</type>
 			<implementation>info.magnolia.forge.universalcontent.app.elasticsearch.ElasticSearchDelegate</implementation>
@@ -45,7 +45,7 @@
 			<implementation>info.magnolia.forge.universalcontent.app.elasticsearch.ElasticSearchConnection</implementation>
 			<scope>singleton</scope>
 		</component>
-		<!-- END ElasticSearch Implementation-->
+		<!-- END ElasticSearch Implementation -->
 		<component>
 			<type>info.magnolia.forge.universalcontent.app.generic.utils.FactoryConverter</type>
 			<implementation>info.magnolia.forge.universalcontent.app.generic.utils.FactoryConverter</implementation>
@@ -66,7 +66,7 @@
 			<scope>singleton</scope>
 		</component>
 
-		
+
 		<component>
 			<type>info.magnolia.forge.universalcontent.app.event.service.TableEventService</type>
 			<implementation>info.magnolia.forge.universalcontent.app.event.service.TableEventServiceImpl</implementation>

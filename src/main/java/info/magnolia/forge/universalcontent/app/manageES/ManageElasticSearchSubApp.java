@@ -5,6 +5,7 @@ package info.magnolia.forge.universalcontent.app.manageES;
 
 import java.util.Optional;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import info.magnolia.forge.universalcontent.app.custom.interfaces.CustomContentC
 import info.magnolia.forge.universalcontent.app.custom.interfaces.CustomTwoColumnView;
 import info.magnolia.forge.universalcontent.app.custom.interfaces.ListSearchViewAppInterface;
 import info.magnolia.forge.universalcontent.app.custom.interfaces.Listener;
+import info.magnolia.forge.universalcontent.app.elasticsearch.configuration.ElasticsearchConfiguration;
 import info.magnolia.forge.universalcontent.app.event.service.ContentEventManager;
 import info.magnolia.forge.universalcontent.app.event.service.ContentEventManagerImpl;
 import info.magnolia.forge.universalcontent.app.generic.connector.GenericContentConnector;
@@ -28,6 +30,7 @@ import info.magnolia.forge.universalcontent.app.generic.ui.service.BrowserManage
 import info.magnolia.forge.universalcontent.app.generic.ui.service.GenericBrowserPresenter;
 import info.magnolia.forge.universalcontent.app.generic.ui.service.UiEventAction;
 import info.magnolia.forge.universalcontent.app.generic.utils.FactoryConverter;
+import info.magnolia.module.ModuleRegistry;
 import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
 import info.magnolia.ui.api.action.ActionExecutor;
@@ -86,7 +89,14 @@ public class ManageElasticSearchSubApp extends BaseSubApp<CustomTwoColumnView> i
 	/** The browser manager. */
 	private BrowserManager browserManager;
 
+	private ElasticsearchConfiguration configuration;
+//	@Inject
 	private RepositoryService serviceContainer;
+	@Inject
+	private ElasticSearchModuleCore moduleCore;
+
+	@Inject
+	private ModuleRegistry moduleRegistry;
 
 	/**
 	 * Instantiates a new manage elastic search sub app.
@@ -114,10 +124,16 @@ public class ManageElasticSearchSubApp extends BaseSubApp<CustomTwoColumnView> i
 			@Named(AdmincentralEventBus.NAME) EventBus adminCentralEventBus, ContentConnector contentConnector,
 			info.magnolia.ui.availability.AvailabilityChecker checker, WorkbenchPresenter workbenchPresenter,
 			FactoryConverter factoryConverter, ActionbarPresenter actionbarPresenter,
-			RepositoryService serviceContainer, ComponentProvider componentProvider,
-			ListSearchViewAppInterface listSearchViewAppInterface) {
-
+			ComponentProvider componentProvider, ListSearchViewAppInterface listSearchViewAppInterface,
+			RepositoryService serviceContainer, ModuleRegistry moduleRegistry) {
 		super(subAppContext, productBrowserView);
+		this.moduleRegistry = moduleRegistry;
+		this.serviceContainer = serviceContainer;
+		ElasticSearchModuleCore elasticSearchModuleCore = moduleRegistry
+				.getModuleInstance(ElasticSearchModuleCore.class);
+		this.serviceContainer.setCacheHelper(elasticSearchModuleCore.getCacheHelper());
+		this.serviceContainer.setElasticSearchModule(elasticSearchModuleCore);
+
 		this.view = productBrowserView;
 		serviceContainer.getUiService().setLogListView(listSearchViewAppInterface);
 		if (subAppContext == null || view == null || browser == null || subAppEventBus == null) {

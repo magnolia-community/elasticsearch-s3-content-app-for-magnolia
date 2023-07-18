@@ -7,7 +7,10 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -19,10 +22,13 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import info.magnolia.forge.universalcontent.app.elasticsearch.ElasticsearchQueryFactory;
 import info.magnolia.forge.universalcontent.app.generic.annotation.Format;
 import info.magnolia.forge.universalcontent.app.generic.entity.GenericItem;
 import info.magnolia.forge.universalcontent.app.generic.search.Params;
 import info.magnolia.forge.universalcontent.app.generic.service.RepositoryService;
+import info.magnolia.forge.universalcontent.elasticsearch.beans.SearchRequest;
+import info.magnolia.forge.universalcontent.elasticsearch.search.entity.PaginationModel;
 import lombok.Getter;
 
 /**
@@ -101,6 +107,21 @@ public class FactoryConverter {
 				paramsSearch.setClassType(serviceRepository.getConverterClass().getClassFromClassName(
 						jsonObject.get("fields").getAsJsonObject().get("index").getAsString(), GenericItem.class));
 			}
+			if (serviceRepository.getCustomContainer() != null
+					&& serviceRepository.getCustomContainer().getContentConnector() != null
+					&& serviceRepository.getCustomContainer().getContentConnector().get() != null
+					&& serviceRepository.getCustomContainer().getContentConnector().get().getPropertyIds() != null) {
+				Collection<?> propertyIds = serviceRepository.getCustomContainer().getContentConnector().get()
+						.getPropertyIds();
+				List<String> properties = propertyIds.stream().map(property -> {
+					return (String) property;
+				}).collect(Collectors.toList());
+				SearchRequest searchRequest = ElasticsearchQueryFactory
+						.configuration(serviceRepository.getElasticSearchModule().getConfiguration())
+						.propertyColumns(properties).pagination(new PaginationModel()).params(paramsSearch).build();
+				paramsSearch.setSearchRequest(searchRequest);
+			}
+
 			serviceRepository.getCacheHelper().putFactoryConvert(paramsSearch.toString(), paramsSearch);
 			return paramsSearch;
 		}

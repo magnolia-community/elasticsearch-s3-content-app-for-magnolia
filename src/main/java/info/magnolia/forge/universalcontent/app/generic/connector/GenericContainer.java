@@ -48,7 +48,8 @@ public class GenericContainer implements CustomContainer {
 	private List<ItemSetChangeListener> itemSetChangeListeners = new LinkedList<ItemSetChangeListener>();
 
 	@Inject
-	private GenericContentConnector<GenericItem> del;
+	@Getter
+	private GenericContentConnector<GenericItem> genericContentConnector;
 
 	@Getter
 	@Setter
@@ -90,18 +91,18 @@ public class GenericContainer implements CustomContainer {
 	 */
 	@Override
 	public <T extends GenericItem> void createCustomContainer(Params params) throws GenericException {
-		Class<? extends GenericItem> searchedClass = serviceContainer.getConverterClass()
-				.getClassFromParams(params, GenericItem.class);
-		searchedClass = FactoryContainer.getDefaultIndex();
+		Class<? extends GenericItem> searchedClass = serviceContainer.getConverterClass().getClassFromParams(params,
+				GenericItem.class);
+//		searchedClass = FactoryContainer.getDefaultIndex();
 		params.getFields().put("index", searchedClass.getClass().getName());
 		params.setClassType(searchedClass);
-		serviceContainer.getCustomContainer().setContentConnector(Optional.of(del));
+		serviceContainer.getCustomContainer().setContentConnector(Optional.of(genericContentConnector));
 		if ((Optional.empty().equals(serviceContainer.getCustomContainer().getContentConnector())
 				|| searchedClass != null)) {
 
 			serviceContainer.getFactoryContainer().create(params.getClassType(), this);
-			del.getQueryDelegate().setServiceContainer(serviceContainer);
-			serviceContainer.setContentConnector(del);
+			genericContentConnector.getQueryDelegate().setServiceContainer(serviceContainer);
+			serviceContainer.setContentConnector(genericContentConnector);
 			List<Field> fields = serviceContainer.getConverterClass().getAllFields(params.getClassType());
 			for (Field field : fields) {
 				addContainerProperty(field.getName(),
@@ -788,7 +789,7 @@ public class GenericContainer implements CustomContainer {
 
 	@Override
 	public void createConnection(Params params) throws Exception {
-		if (serviceContainer.getCustomContainer().getContentConnector().get() == null) {
+		if (serviceContainer.getCustomContainer().getContentConnector().get() != null) {
 			createCustomContainer(params);
 		}
 		serviceContainer.getCustomContainer().getContentConnector().get().createConnection(params);

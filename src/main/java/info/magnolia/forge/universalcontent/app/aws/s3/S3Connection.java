@@ -3,6 +3,8 @@
  */
 package info.magnolia.forge.universalcontent.app.aws.s3;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +18,10 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import info.magnolia.forge.universalcontent.app.custom.interfaces.CustomConnection;
 import info.magnolia.forge.universalcontent.app.generic.connection.ParameterConnection;
 import info.magnolia.forge.universalcontent.app.generic.connection.S3ParameterConnection;
+import info.magnolia.forge.universalcontent.app.manageES.ElasticSearchModuleCore;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Create a general purpose connection with AWS S3 instance
@@ -28,6 +33,10 @@ public class S3Connection implements CustomConnection {
 	AmazonS3 client;
 	AWSCredentials credentials;
 	ParameterConnection params;
+	@Setter
+	@Getter
+	@Inject
+	ElasticSearchModuleCore elasticSearchModule;
 
 	/**
 	 * Instantiates a S3 connection.

@@ -5,7 +5,9 @@ package info.magnolia.forge.universalcontent.app.event.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -18,6 +20,9 @@ import info.magnolia.forge.universalcontent.app.custom.interfaces.RefreshCacheEv
 import info.magnolia.forge.universalcontent.app.event.AddItem;
 import info.magnolia.forge.universalcontent.app.event.AddItemEvent;
 import info.magnolia.forge.universalcontent.app.event.GenericSearchEvent;
+import info.magnolia.forge.universalcontent.app.generic.others.GenericException;
+import info.magnolia.forge.universalcontent.app.generic.others.LogStatus;
+import info.magnolia.forge.universalcontent.app.generic.search.GenericParamsBuilder;
 import info.magnolia.forge.universalcontent.app.generic.search.Params;
 import info.magnolia.forge.universalcontent.app.generic.service.RepositoryService;
 import info.magnolia.ui.actionbar.ActionbarPresenter;
@@ -154,10 +159,32 @@ public class ContentEventManagerImpl implements ContentEventManager {
 			Params searchParams = event.getSearchParams();
 			if (searchParams != null) {
 				services.getCustomContainer().addItem(event.getAddItem().getObj());
+				searchParams.setSize(searchParams.getSize() + searchParams.getSizePage());
+				try {
+					services.getCustomContainer().refreshDelegate(searchParams);
+				} catch (GenericException e) {
+					services.getLogService().logger(LogStatus.ERROR, "Error refresh data", ContentEventManager.class,
+							e);
+				}
 				services.getCacheHelper().removeAllCachedItems();
 				services.getCacheHelper().removeAllCachedResults();
+				searchParams = GenericParamsBuilder.createSearch(services).params(searchParams).initializeFieldsSearch()
+						.fullTextSearch(null).get();
 				String jsonSearchParams = services.getUiService().getFactoryConverter().convert(searchParams);
 				services.getUiService().getWorkbenchPresenter().doSearch(jsonSearchParams);
+
+				Map<String, Object> variables = new HashMap<String, Object>();
+				variables.put("firstToBeRendered", 0);
+				variables.put("sortcolumn", "0");
+				variables.put("firstvisible", 0);
+				variables.put("reqfirstrow", 0);
+				variables.put("reqrows", 1);
+				variables.put("sortascending", true);
+				variables.put("lastToBeRendered", 1);
+//				{lastToBeRendered=15, firstvisible=6, firstToBeRendered=0, reqfirstrow=0, reqrows=16, sortascending=true}
+				services.getUiService().getLogListView().getTable().changeVariables(null, variables);
+				variables.put("sortascending", false);
+				services.getUiService().getLogListView().getTable().changeVariables(null, variables);
 			}
 		});
 	}

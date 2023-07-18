@@ -1,5 +1,7 @@
 package info.magnolia.forge.universalcontent.app.generic.service;
 
+import javax.inject.Inject;
+
 import info.magnolia.forge.universalcontent.app.custom.interfaces.CustomListenerPresenter;
 import info.magnolia.forge.universalcontent.app.custom.interfaces.CustomTwoColumnView;
 import info.magnolia.forge.universalcontent.app.custom.interfaces.ListSearchViewAppInterface;
@@ -60,6 +62,7 @@ public class UiServiceImpl implements UiService {
 
 	private FactoryConverter factoryConverter;
 
+	@Inject
 	public UiServiceImpl(RepositoryService serviceRepository) {
 		factoryConverter = new FactoryConverter(serviceRepository);
 	}

@@ -3,10 +3,12 @@
  */
 package info.magnolia.forge.universalcontent.app.generic.utils;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -14,21 +16,28 @@ import java.util.stream.Collectors;
 
 import org.reflections.Reflections;
 
+import com.google.gson.Gson;
+
 import info.magnolia.forge.universalcontent.app.generic.annotation.Boost;
+import info.magnolia.forge.universalcontent.app.generic.annotation.GenericEntity;
 import info.magnolia.forge.universalcontent.app.generic.entity.GenericItem;
 import info.magnolia.forge.universalcontent.app.generic.others.LogStatus;
 import info.magnolia.forge.universalcontent.app.generic.search.Params;
 import info.magnolia.forge.universalcontent.app.generic.service.RepositoryService;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * From Class retrieving all fields. It works with reflections
  *
  */
+@Slf4j
 public class GenericClassConverter {
 	private RepositoryService repositoryService;
+	private Gson gson;
 
 	public GenericClassConverter(RepositoryService repositoryService) {
 		this.repositoryService = repositoryService;
+		gson = new Gson();
 	}
 
 	/**
@@ -300,5 +309,99 @@ public class GenericClassConverter {
 			return false;
 		}).findFirst().get();
 		return classType;
+	}
+
+	public static <D> D createInstanceOfClass(Class<D> clazz) {
+		D object = null;
+		Constructor<D> constructor = null;
+		try {
+			constructor = clazz.getDeclaredConstructor();
+			constructor.setAccessible(true);
+
+			object = constructor.newInstance();
+			return object;
+		} catch (Exception e) {
+
+		}
+		return null;
+	}
+
+	public static <D> D createObjectFromMap(Class<D> clazz, Map<String, Object> fieldValues) {
+		D object = null;
+		Constructor<D> constructor = null;
+		try {
+			constructor = clazz.getDeclaredConstructor();
+			constructor.setAccessible(true);
+
+			object = constructor.newInstance();
+
+			for (Map.Entry<String, Object> entry : fieldValues.entrySet()) {
+				Field field = null;
+				Object fieldValue = null;
+				String fieldName = null;
+				try {
+					fieldName = entry.getKey();
+					fieldValue = entry.getValue();
+
+					field = clazz.getDeclaredField(fieldName);
+					field.setAccessible(true);
+
+					field.set(object, fieldValue);
+				} catch (Exception e) {
+					try {
+						Field fieldSuperClass = clazz.getSuperclass().getDeclaredField(fieldName);
+						fieldSuperClass.setAccessible(true);
+						fieldSuperClass.set(object, fieldValue);
+					} catch (Exception e1) {
+						log.error("Error createObjectFromMap", e);
+					}
+				}
+			}
+		} catch (Exception e) {
+			return null;
+		}
+
+		return object;
+	}
+
+	public static <D> Object getFieldValue(Class<D> clazz, D instance, String fieldName) {
+		try {
+			Field field = clazz.getDeclaredField(fieldName);
+			field.setAccessible(true);
+			return field.get(instance);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public GenericItem getAllClassHaveParameter(String value) {
+		try {
+			List<Class> list = repositoryService.getConverterClass().getAllClassGenericItem(GenericItem.class).stream()
+					.filter(clazz -> {
+						if (clazz.getClass().getAnnotation(GenericEntity.class).workspace() != null
+								&& clazz.getClass().getAnnotation(GenericEntity.class).workspace().equals(value)) {
+							return true;
+						}
+						return false;
+					}).map(clazz -> {
+						return clazz;
+					}).collect(Collectors.toList());
+			if (list != null && list.size() > 0) {
+				return (GenericItem) GenericClassConverter.createInstanceOfClass(list.get(0));
+
+			}
+		} catch (Exception e) {
+			repositoryService.getLogService().logger(LogStatus.ERROR, "Find all class have parameter",
+					GenericClassConverter.class, e);
+		}
+		return null;
+	}
+
+	public <T> T convert(String json, Class<T> type) {
+		return gson.fromJson(json, type);
+	}
+
+	public String convert(Object obj) {
+		return gson.toJson(obj);
 	}
 }

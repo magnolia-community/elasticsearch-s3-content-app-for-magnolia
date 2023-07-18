@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.vaadin.v7.data.Container;
 
+import info.magnolia.forge.universalcontent.app.generic.connector.GenericContentConnector;
 import info.magnolia.forge.universalcontent.app.generic.entity.GenericItem;
 import info.magnolia.forge.universalcontent.app.generic.others.GenericException;
 import info.magnolia.forge.universalcontent.app.generic.search.Params;
@@ -20,4 +21,7 @@ public interface CustomContainer extends Container.Hierarchical, Container.ItemS
 	void createConnection(Params params) throws Exception;
 
 	public void refreshDelegate(Params params) throws GenericException;
+
+	public GenericContentConnector<GenericItem> getGenericContentConnector();
+
 }

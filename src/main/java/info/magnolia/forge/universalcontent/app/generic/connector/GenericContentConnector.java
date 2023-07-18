@@ -49,6 +49,7 @@ import info.magnolia.objectfactory.ComponentProvider;
 import info.magnolia.ui.vaadin.integration.contentconnector.AbstractContentConnector;
 import info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Container represent elastic search connector for manage all operations within
@@ -77,6 +78,8 @@ public class GenericContentConnector<T extends GenericItem> extends AbstractCont
 	private LinkedList<Container.ItemSetChangeListener> itemSetChangeListeners;
 
 	/** The type class. */
+	@Getter
+	@Setter
 	private Class<? extends GenericItem> typeClass;
 
 	private Params params;
@@ -435,7 +438,11 @@ public class GenericContentConnector<T extends GenericItem> extends AbstractCont
 	 */
 	@Override
 	public List<Object> getItemIds(int startIndex, int numberOfIds, Container.Indexed container) {
-		return (List<Object>) getItemIds().stream().collect(Collectors.toList()).subList(startIndex, numberOfIds);
+		List<Object> list = (List<Object>) getItemIds().stream().collect(Collectors.toList());
+		if (numberOfIds > list.size()) {
+			numberOfIds = list.size() - 1;
+		}
+		return list.subList(startIndex, numberOfIds);
 	}
 
 	/**
@@ -723,9 +730,9 @@ public class GenericContentConnector<T extends GenericItem> extends AbstractCont
 			GenericEntity annotation = itemId.getClass().getAnnotation(GenericEntity.class);
 			if (annotation != null) {
 				try {
-					if (!queryDelegate.hasExecuteSetup(annotation.name())) {
-						queryDelegate.setup(annotation.name(), itemId.getClass());
-					}
+//					if (!queryDelegate.hasExecuteSetup(annotation.name())) {
+//						queryDelegate.setup(annotation.name(), itemId.getClass());
+//					}
 					String id = (String) serviceContainer.getConverterClass().getFieldFromInstance(typeClass,
 							(T) itemId, GenericConstants.PARAM_ID);
 					if (!StringUtils.isNotEmpty(id)) {
@@ -818,6 +825,7 @@ public class GenericContentConnector<T extends GenericItem> extends AbstractCont
 	 *
 	 * @param typeClass the new type class
 	 */
+	@Override
 	public void setTypeClass(Class<? extends GenericItem> typeClass) {
 		this.typeClass = typeClass;
 	}

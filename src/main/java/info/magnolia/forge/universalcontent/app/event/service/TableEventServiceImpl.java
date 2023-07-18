@@ -64,6 +64,9 @@ public class TableEventServiceImpl implements TableEventService {
 
 	private RepositoryService serviceContainer;
 
+	public TableEventServiceImpl() {
+	}
+
 	/**
 	 * Adds the value change listener.
 	 */

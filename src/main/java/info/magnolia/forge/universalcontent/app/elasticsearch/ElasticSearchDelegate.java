@@ -28,6 +28,7 @@ import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.indices.CreateIndexRequest;
 import co.elastic.clients.util.ObjectBuilder;
 import info.magnolia.forge.universalcontent.app.custom.interfaces.CustomConnection;
+import info.magnolia.forge.universalcontent.app.elasticsearch.connector.ElasticSearchConnection;
 import info.magnolia.forge.universalcontent.app.generic.annotation.DelegateImplementation;
 import info.magnolia.forge.universalcontent.app.generic.connection.ElasticSearchParameterConnection;
 import info.magnolia.forge.universalcontent.app.generic.connector.GenericDelegate;
@@ -53,7 +54,6 @@ import lombok.Data;
 @Data
 @DelegateImplementation(parameterClass = ElasticSearchParameterConnection.class)
 public class ElasticSearchDelegate<T extends GenericItem> extends GenericDelegate<T> {
-	/** The query builder. */
 	Function<Builder, ObjectBuilder<Query>> queryBuilder = null;
 
 	@Inject

@@ -24,4 +24,9 @@ public interface CustomContentConnector extends GenericContentConnector, Elastic
 
 	public List<OrderBy> getSorters();
 
+	@Override
+	public Class<? extends GenericItem> getTypeClass();
+
+	public void setTypeClass(Class<? extends GenericItem> typeClass);
+
 }

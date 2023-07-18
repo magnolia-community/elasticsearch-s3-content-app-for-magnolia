@@ -8,7 +8,7 @@ import java.util.Map;
 import org.apache.commons.collections4.map.HashedMap;
 
 import info.magnolia.forge.universalcontent.app.custom.interfaces.CustomContainer;
-import info.magnolia.forge.universalcontent.app.generic.custom.entity.CustomIndexElasticSearch;
+import info.magnolia.forge.universalcontent.app.generic.custom.entity.Page;
 import info.magnolia.forge.universalcontent.app.generic.entity.GenericItem;
 import info.magnolia.forge.universalcontent.app.generic.others.GenericException;
 
@@ -89,7 +89,7 @@ public class FactoryContainer {
 	}
 
 	public static Class<? extends GenericItem> getDefaultIndex() {
-		return CustomIndexElasticSearch.class;
+		return Page.class;
 	}
 
 }

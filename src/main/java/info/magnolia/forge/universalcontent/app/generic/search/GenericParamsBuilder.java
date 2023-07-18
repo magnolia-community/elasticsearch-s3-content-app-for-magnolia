@@ -3,11 +3,21 @@
  */
 package info.magnolia.forge.universalcontent.app.generic.search;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang.StringUtils;
 
+import info.magnolia.forge.universalcontent.app.elasticsearch.ElasticsearchQueryFactory;
 import info.magnolia.forge.universalcontent.app.generic.entity.GenericItem;
 import info.magnolia.forge.universalcontent.app.generic.service.RepositoryService;
 import info.magnolia.forge.universalcontent.app.generic.utils.GenericConstants;
+import info.magnolia.forge.universalcontent.elasticsearch.beans.SearchRequest;
+import info.magnolia.forge.universalcontent.elasticsearch.search.entity.PaginationModel;
+import info.magnolia.forge.universalcontent.elasticsearch.search.entity.SearchItemBuilder;
 
 /**
  * Builder pattern to generic params search
@@ -17,9 +27,12 @@ public class GenericParamsBuilder {
 	/** The params. */
 	private Params params;
 	private RepositoryService repositoryService;
+	private SearchItemBuilder searchItemBuilder;
+	private List<String> propertyColumns;
 
 	public GenericParamsBuilder(RepositoryService repositoryService) {
 		this.repositoryService = repositoryService;
+		this.propertyColumns = new ArrayList<String>();
 	}
 
 	/**
@@ -29,6 +42,7 @@ public class GenericParamsBuilder {
 	 */
 	public static GenericParamsBuilder createSearch(RepositoryService repositoryService) {
 		GenericParamsBuilder builder = new GenericParamsBuilder(repositoryService);
+		builder.propertyColumns = new ArrayList<String>();
 		builder.params = new Params();
 		builder.params.setType(TypeParam.SEARCH);
 		return builder;
@@ -44,9 +58,10 @@ public class GenericParamsBuilder {
 	public static <T> GenericParamsBuilder createAdd(Class<? extends GenericItem> classType,
 			RepositoryService repositoryService) {
 		GenericParamsBuilder builder = new GenericParamsBuilder(repositoryService);
+		builder.propertyColumns = new ArrayList<String>();
 		builder.params = new Params();
 		builder.params.setType(TypeParam.ADD);
-		builder.addField("index", classType.getName());
+		builder.addField(GenericConstants.FILTER_INDEX, classType.getName());
 		builder.params.setClassType(classType);
 		return builder;
 	}
@@ -59,6 +74,16 @@ public class GenericParamsBuilder {
 	 */
 	public GenericParamsBuilder params(Params params) {
 		this.params = params;
+		return this;
+	}
+
+	public GenericParamsBuilder initializeFieldsSearch() {
+		if (this.params != null && this.params.getFields() != null) {
+			Map<String, Object> fields = this.params.getFields().entrySet().stream().filter(field -> {
+				return GenericConstants.FILTER_INDEX.equals(field.getKey());
+			}).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+			this.params.setFields(fields);
+		}
 		return this;
 	}
 
@@ -169,6 +194,19 @@ public class GenericParamsBuilder {
 	 * @return the params
 	 */
 	public Params get() {
+		if (repositoryService != null && repositoryService.getCustomContainer() != null
+				&& repositoryService.getCustomContainer().getContentConnector() != null) {
+			Collection<?> propertyIds = repositoryService.getCustomContainer().getContentConnector().get()
+					.getPropertyIds();
+			List<String> properties = propertyIds.stream().map(property -> {
+				return (String) property;
+			}).collect(Collectors.toList());
+			SearchRequest searchRequest = ElasticsearchQueryFactory
+					.configuration(repositoryService.getElasticSearchModule().getConfiguration())
+					.propertyColumns(propertyColumns).pagination(new PaginationModel()).params(this.params).build();
+			this.params.setSearchRequest(searchRequest);
+		}
+
 		return this.params;
 	}
 
@@ -198,6 +236,11 @@ public class GenericParamsBuilder {
 		return this;
 	}
 
+	public GenericParamsBuilder propertyColumns(List<String> properties) {
+		this.propertyColumns = properties;
+		return this;
+	}
+
 	/**
 	 * Offset.
 	 *
@@ -220,6 +263,10 @@ public class GenericParamsBuilder {
 	public GenericParamsBuilder fullTextSearch(String fullTextSearch) {
 		if (this.params != null && this.params.getRelevanceSearch() != null) {
 			this.params.getRelevanceSearch().setFullTextSearch(fullTextSearch);
+			SearchRequest searchRequest = ElasticsearchQueryFactory
+					.configuration(repositoryService.getElasticSearchModule().getConfiguration())
+					.propertyColumns(propertyColumns).pagination(new PaginationModel()).params(this.params).build();
+			this.params.setSearchRequest(searchRequest);
 		}
 		return this;
 	}
