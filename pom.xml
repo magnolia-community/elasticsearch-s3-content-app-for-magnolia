@@ -52,13 +52,15 @@
 		<dependency>
 			<groupId>info.magnolia</groupId>
 			<artifactId>magnolia-templating</artifactId>
+			<version>6.2.8</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>info.magnolia.publishing</groupId>
 			<artifactId>magnolia-publishing-core</artifactId>
+			<version>1.2.5</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>info.magnolia.publishing</groupId>
 			<artifactId>magnolia-publishing-receiver</artifactId>
@@ -73,6 +75,7 @@
 		<dependency>
 			<groupId>info.magnolia.templating</groupId>
 			<artifactId>magnolia-templating-essentials-models</artifactId>
+			<version>1.5.3</version>
 		</dependency>
 
 		<!-- Elastic Search integration v8 -->
