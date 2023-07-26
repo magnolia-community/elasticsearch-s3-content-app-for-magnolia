@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -41,152 +40,151 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ElasticSearchConnection implements CustomConnection {
 
-	@Getter
-	RestClient restClient;
+    @Getter
+    RestClient restClient;
 
-	/** The client. */
-	ElasticsearchClient client;
+    /** The client. */
+    ElasticsearchClient client;
 
-	private Sniffer sniffer;
+    private Sniffer sniffer;
 
-	@Getter
-	@Setter
-	ElasticSearchParameterConnection params;
-	@Setter
-	@Getter
-	@Inject
-	ElasticSearchModuleCore elasticSearchModule;
-	@Setter
-	@Getter
-	ElasticsearchConfiguration elasticSearchConfiguration;
+    @Getter
+    @Setter
+    ElasticSearchParameterConnection params;
+    @Setter
+    @Getter
+    @Inject
+    ElasticSearchModuleCore elasticSearchModule;
+    @Setter
+    @Getter
+    ElasticsearchConfiguration elasticSearchConfiguration;
 
-	/**
-	 * Instantiates a new elastic search connection.
-	 */
-	public ElasticSearchConnection() {
-		if (elasticSearchModule != null) {
-			this.elasticSearchConfiguration = elasticSearchModule.getConfiguration();
-		}
-		if (params != null) {
-			connection(params);
-		}
+    /**
+     * Instantiates a new elastic search connection.
+     */
+    public ElasticSearchConnection() {
+	if (elasticSearchModule != null) {
+	    this.elasticSearchConfiguration = elasticSearchModule.getConfiguration();
 	}
+	if (params != null) {
+	    connection(params);
+	}
+    }
 
-	/**
-	 * Connection.
-	 *
-	 * @param server the server
-	 * @param port   the port
-	 */
-	@Override
-	public void connection(ParameterConnection params) {
+    /**
+     * Connection.
+     *
+     * @param server the server
+     * @param port   the port
+     */
+    @Override
+    public void connection(ParameterConnection params) {
 //		restClient = RestClient.builder(new HttpHost(params.getServer(), Integer.valueOf(params.getPort())))
 //				.setDefaultHeaders(new Header[] { new BasicHeader("Content-type", "application/json"),
 //						new BasicHeader("X-Elastic-Product", "Elasticsearch") })
 //				.build();
-		ElasticsearchTransport transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
-		client = new ElasticsearchClient(transport);
+	ElasticsearchTransport transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
+	client = new ElasticsearchClient(transport);
 
-		try {
-			if (elasticSearchModule != null) {
-				this.elasticSearchConfiguration = elasticSearchModule.getConfiguration();
+	try {
+	    if (elasticSearchModule != null) {
+		this.elasticSearchConfiguration = elasticSearchModule.getConfiguration();
+	    }
+	    if (elasticSearchConfiguration != null) {
+
+		List<HttpHost> httpHosts = new LinkedList<HttpHost>();
+		List<String> hosts = Arrays.asList(StringUtils.split(elasticSearchConfiguration.getHosts(), ","));
+		String port = elasticSearchConfiguration.getPort() == null ? "9200"
+			: elasticSearchConfiguration.getPort();
+
+		if (CollectionUtils.isNotEmpty(hosts)) {
+		    for (String host : hosts) {
+			try {
+			    HttpHost httpHost;
+			    if (elasticSearchConfiguration.getHttps() != null
+				    && BooleanUtils.isTrue(elasticSearchConfiguration.getHttps())) {
+				httpHost = new HttpHost(host, Integer.parseInt(port), "https");
+			    } else {
+				httpHost = new HttpHost(host, Integer.parseInt(port), "http");
+			    }
+
+			    if (httpHost != null) {
+				httpHosts.add(httpHost);
+			    } else {
+				log.error("Cannot create http host from '{}'", host);
+			    }
+			} catch (Exception e) {
+			    log.error("Cannot create http host from '{}'", host, e);
 			}
-			if (elasticSearchConfiguration != null) {
+		    }
+		}
 
-				List<HttpHost> httpHosts = new LinkedList<HttpHost>();
-				List<String> hosts = Arrays.asList(StringUtils.split(elasticSearchConfiguration.getHosts(), ","));
-				String port = elasticSearchConfiguration.getPort() == null ? "9200"
-						: elasticSearchConfiguration.getPort();
+		if (CollectionUtils.isNotEmpty(httpHosts)) {
+		    RestClientBuilder builder = RestClient.builder(httpHosts.toArray(new HttpHost[httpHosts.size()]))
+			    .setRequestConfigCallback(new RestClientBuilder.RequestConfigCallback() {
 
-				if (CollectionUtils.isNotEmpty(hosts)) {
-					for (String host : hosts) {
-						try {
-							HttpHost httpHost;
-							if (elasticSearchConfiguration.getHttps() != null
-									&& BooleanUtils.isTrue(elasticSearchConfiguration.getHttps())) {
-								httpHost = new HttpHost(host, Integer.parseInt(port), "https");
-							} else {
-								httpHost = new HttpHost(host, Integer.parseInt(port), "http");
-							}
-
-							if (httpHost != null) {
-								httpHosts.add(httpHost);
-							} else {
-								log.error("Cannot create http host from '{}'", host);
-							}
-						} catch (Exception e) {
-							log.error("Cannot create http host from '{}'", host, e);
-						}
-					}
+				@Override
+				public Builder customizeRequestConfig(Builder requestConfigBuilder) {
+				    return requestConfigBuilder
+					    .setConnectTimeout(
+						    (int) (long) elasticSearchConfiguration.getConnectTimeout())
+					    .setSocketTimeout(
+						    (int) (long) elasticSearchConfiguration.getSocketTimeout());
 				}
 
-				if (CollectionUtils.isNotEmpty(httpHosts)) {
-					RestClientBuilder builder = RestClient.builder(httpHosts.toArray(new HttpHost[httpHosts.size()]))
-							.setRequestConfigCallback(new RestClientBuilder.RequestConfigCallback() {
+			    });
 
-								@Override
-								public Builder customizeRequestConfig(Builder requestConfigBuilder) {
-									return requestConfigBuilder
-											.setConnectTimeout(
-													(int) (long) elasticSearchConfiguration.getConnectTimeout())
-											.setSocketTimeout(
-													(int) (long) elasticSearchConfiguration.getSocketTimeout());
-								}
+		    restClient = builder.build();
 
-							});
+		    restClient = RestClient.builder(httpHosts.toArray(new HttpHost[httpHosts.size()])).build();
 
-					restClient = builder.build();
+		    if (Boolean.valueOf(elasticSearchConfiguration.getSniffer())) {
+			sniffer = Sniffer.builder(restClient).build();
+		    }
 
-					restClient = RestClient.builder(httpHosts.toArray(new HttpHost[httpHosts.size()])).build();
+		    log.info("Successfully loaded Elasticsearch configuration");
 
-					if (Boolean.valueOf(elasticSearchConfiguration.getSniffer())) {
-						sniffer = Sniffer.builder(restClient).build();
-					}
-
-					log.info("Successfully loaded Elasticsearch configuration");
-
-				} else {
-					log.error(
-							"No valid http host can be built for connecting to elasticsearch: please check your magnolia.properties");
-				}
-
-			} else {
-				log.error(
-						"No valid configuration found for connecting to elasticsearch: please check your magnolia.properties");
-			}
-
-		} catch (Exception e) {
-			log.error("Exception caught building Elasticserach's client", e);
+		} else {
+		    log.error(
+			    "No valid http host can be built for connecting to elasticsearch: please check your magnolia.properties");
 		}
 
+	    } else {
+		log.error(
+			"No valid configuration found for connecting to elasticsearch: please check your magnolia.properties");
+	    }
+
+	} catch (Exception e) {
+	    log.error("Exception caught building Elasticserach's client", e);
 	}
 
-	@PreDestroy
-	public void release() {
-		if (sniffer != null) {
-			try {
-				sniffer.close();
-			} catch (Exception e) {
-				log.error("Exception caught closing Elasticserach's sniffer", e);
-			}
-		}
-		if (restClient != null) {
-			try {
-				restClient.close();
-			} catch (Exception e) {
-				log.error("Exception caught closing Elasticserach's client", e);
-			}
-		}
-	}
+    }
 
-	@Override
-	public void connect() {
-		connection(params);
+    public void release() {
+	if (sniffer != null) {
+	    try {
+		sniffer.close();
+	    } catch (Exception e) {
+		log.error("Exception caught closing Elasticserach's sniffer", e);
+	    }
 	}
+	if (restClient != null) {
+	    try {
+		restClient.close();
+	    } catch (Exception e) {
+		log.error("Exception caught closing Elasticserach's client", e);
+	    }
+	}
+    }
 
-	@Override
-	public void setParams(ParameterConnection parameterConnection) {
-		this.params = (ElasticSearchParameterConnection) parameterConnection;
-	}
+    @Override
+    public void connect() {
+	connection(params);
+    }
+
+    @Override
+    public void setParams(ParameterConnection parameterConnection) {
+	this.params = (ElasticSearchParameterConnection) parameterConnection;
+    }
 
 }
