@@ -31,6 +31,12 @@
 			<groupId>info.magnolia</groupId>
 			<artifactId>magnolia-core</artifactId>
 			<version>${magnoliaBundleVersion}</version>
+			<exclusions>
+                <exclusion>
+                    <groupId>com.thoughtworks.proxytoys</groupId>
+					<artifactId>proxytoys-site</artifactId>
+                </exclusion>
+            </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>info.magnolia.ui</groupId>
@@ -221,6 +227,13 @@
 		</plugins>
 	</build>
 	<repositories>
+		<repository>
+			<id>maven</id>
+			<url>https://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
 		<repository>
 			<id>magnolia.public</id>
 			<url>https://nexus.magnolia-cms.com/content/repositories/magnolia.public.releases</url>
