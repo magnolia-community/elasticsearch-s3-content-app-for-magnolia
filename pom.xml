@@ -70,7 +70,7 @@
 		<dependency>
 			<groupId>info.magnolia.publishing</groupId>
 			<artifactId>magnolia-publishing-receiver</artifactId>
-			<version>1.3.8</version>
+			<version>1.2.5</version>
 		</dependency>
 		<dependency>
 			<groupId>info.magnolia.categorization</groupId>
@@ -234,15 +234,15 @@
 	</build>
 	<repositories>
 		<repository>
-			<id>openmindonline</id>
-			<url>https://repository.openmindonline.it/</url>
+			<id>magnolia.public</id>
+			<url>https://nexus.magnolia-cms.com/content/groups/public/</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
 		<repository>
-			<id>magnolia.public</id>
-			<url>https://nexus.magnolia-cms.com/content/repositories/magnolia.public.releases</url>
+			<id>openmindonline</id>
+			<url>https://repository.openmindonline.it</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
