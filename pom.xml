@@ -173,7 +173,7 @@
 		<dependency>
 			<groupId>com.thoughtworks.proxytoys</groupId>
 			<artifactId>proxytoys-site</artifactId>
-			<version>1.0</version>
+			<version>1.01-MAGNOLIA-5317-patched</version>
 			<type>pom</type>
 		</dependency>
 
@@ -234,8 +234,8 @@
 	</build>
 	<repositories>
 		<repository>
-			<id>maven</id>
-			<url>https://repo1.maven.org/maven2</url>
+			<id>openmindonline</id>
+			<url>https://repository.openmindonline.it/</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
