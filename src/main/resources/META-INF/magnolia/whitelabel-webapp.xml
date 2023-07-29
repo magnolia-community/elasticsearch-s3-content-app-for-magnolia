@@ -4,7 +4,7 @@
 	<description>${project.description}</description>
 	<class>info.magnolia.forge.universalcontent.app.manageES.ElasticSearchModuleCore</class>
 	<versionHandler>info.magnolia.forge.universalcontent.app.manageES.ElasticSearchModuleCoreVersionHandler</versionHandler>
-	<version>1.6.3</version>
+	<version>1.6.4</version>
 	<components>
 		<id>main</id>
 		
