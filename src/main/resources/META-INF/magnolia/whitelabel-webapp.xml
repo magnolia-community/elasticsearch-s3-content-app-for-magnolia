@@ -2,14 +2,30 @@
 	<name>whitelabel-webapp</name>
 	<displayName>${project.name}</displayName>
 	<description>${project.description}</description>
-	<class>info.magnolia.forge.universalcontent.app.manageES.ElasticSearchModuleCoreVersionHandler</class>
+	<class>info.magnolia.forge.universalcontent.app.manageES.ElasticSearchModuleCore</class>
 	<versionHandler>info.magnolia.forge.universalcontent.app.manageES.ElasticSearchModuleCoreVersionHandler</versionHandler>
-	<version>${project.version}</version>
+	<version>1.6.3</version>
 	<components>
-		<id>app-manageES-browser</id>
+		<id>main</id>
+		
 		<component>
-			<type>info.magnolia.forge.universalcontent.app.custom.interfaces.CustomListenerPresenter</type>
-			<implementation>info.magnolia.forge.universalcontent.app.generic.ui.service.GenericBrowserPresenter</implementation>
+			<type>info.magnolia.forge.universalcontent.app.generic.service.UiService</type>
+			<implementation>info.magnolia.forge.universalcontent.app.generic.service.UiServiceImpl</implementation>
+			<scope>singleton</scope>
+		</component>
+		<component>
+			<type>info.magnolia.forge.universalcontent.app.custom.interfaces.CustomContainer</type>
+			<implementation>info.magnolia.forge.universalcontent.app.generic.connector.GenericContainer</implementation>
+			<scope>singleton</scope>
+		</component>
+		<component>
+			<type>info.magnolia.forge.universalcontent.app.elasticsearch.service.CommonIndexingService</type>
+			<implementation>info.magnolia.forge.universalcontent.app.elasticsearch.service.CommonIndexingServiceImpl</implementation>
+			<scope>singleton</scope>
+		</component>
+		<component>
+			<type>info.magnolia.forge.universalcontent.app.generic.service.LogService</type>
+			<implementation>info.magnolia.forge.universalcontent.app.generic.service.LogServiceImpl</implementation>
 			<scope>singleton</scope>
 		</component>
 		<component>
@@ -18,11 +34,31 @@
 			<scope>singleton</scope>
 		</component>
 		<component>
-			<type>info.magnolia.forge.universalcontent.app.custom.interfaces.CustomView</type>
-			<implementation>info.magnolia.forge.universalcontent.app.generic.ui.service.GenericViewImpl</implementation>
+			<type>info.magnolia.forge.universalcontent.app.elasticsearch.service.IIndexingService</type>
+			<implementation>info.magnolia.forge.universalcontent.app.elasticsearch.service.ElasticsearchIndexingServiceImpl</implementation>
+		</component>
+		<component>
+			<type>info.magnolia.forge.universalcontent.app.manageES.ElasticSearchModuleCore</type>
+			<implementation>info.magnolia.forge.universalcontent.app.manageES.ElasticSearchModuleCore</implementation>
 			<scope>singleton</scope>
 		</component>
-		<!-- START S3 Implementation -->
+
+		<component>
+			<type>info.magnolia.forge.universalcontent.app.custom.interfaces.CustomContentConnector</type>
+			<implementation>info.magnolia.forge.universalcontent.app.generic.connector.GenericContentConnector</implementation>
+			<scope>singleton</scope>
+		</component>
+		<component>
+			<type>info.magnolia.forge.universalcontent.app.generic.connector.FactoryContainer</type>
+			<implementation>info.magnolia.forge.universalcontent.app.generic.connector.FactoryContainer</implementation>
+			<scope>singleton</scope>
+		</component>
+			<component>
+			<type>info.magnolia.forge.universalcontent.app.generic.others.CacheHelper</type>
+			<implementation>info.magnolia.forge.universalcontent.app.generic.others.CacheHelper</implementation>
+			<scope>singleton</scope>
+		</component>
+		<!-- START S3 Implementation-->
 		<component>
 			<type>info.magnolia.forge.universalcontent.app.aws.s3.S3Delegate</type>
 			<implementation>info.magnolia.forge.universalcontent.app.aws.s3.S3Delegate</implementation>
@@ -33,19 +69,43 @@
 			<implementation>info.magnolia.forge.universalcontent.app.aws.s3.S3Connection</implementation>
 			<scope>singleton</scope>
 		</component>
-		<!-- END S3 Implementation -->
-		<!-- START ElasticSearch Implementation -->
+		<!-- END S3 Implementation-->
+		<!-- START ElasticSearch Implementation-->
 		<component>
 			<type>info.magnolia.forge.universalcontent.app.elasticsearch.ElasticSearchDelegate</type>
 			<implementation>info.magnolia.forge.universalcontent.app.elasticsearch.ElasticSearchDelegate</implementation>
 			<scope>singleton</scope>
 		</component>
 		<component>
-			<type>info.magnolia.forge.universalcontent.app.elasticsearch.ElasticSearchConnection</type>
-			<implementation>info.magnolia.forge.universalcontent.app.elasticsearch.ElasticSearchConnection</implementation>
+			<type>info.magnolia.forge.universalcontent.app.elasticsearch.ElasticSearchDelegate8</type>
+			<implementation>info.magnolia.forge.universalcontent.app.elasticsearch.ElasticSearchDelegate8</implementation>
 			<scope>singleton</scope>
 		</component>
-		<!-- END ElasticSearch Implementation -->
+		<component>
+			<type>info.magnolia.forge.universalcontent.app.elasticsearch.connector.ElasticSearchConnection</type>
+			<implementation>info.magnolia.forge.universalcontent.app.elasticsearch.connector.ElasticSearchConnection</implementation>
+			<scope>singleton</scope>
+		</component>
+		<!-- END ElasticSearch Implementation-->
+		<component>
+			<type>info.magnolia.forge.universalcontent.app.elasticsearch.service.IIndexingService</type>
+			<implementation>info.magnolia.forge.universalcontent.app.elasticsearch.service.ElasticsearchIndexingServiceImpl</implementation>
+		</component>
+		<component>
+			<type>info.magnolia.forge.universalcontent.app.elasticsearch.filter.IndexingFilter</type>
+			<implementation>info.magnolia.forge.universalcontent.app.elasticsearch.filter.IndexingFilter</implementation>
+			<scope>singleton</scope>
+		</component>
+		<component>
+			<type>info.magnolia.forge.universalcontent.app.elasticsearch.configuration.ElasticsearchConfiguration</type>
+			<implementation>info.magnolia.forge.universalcontent.app.elasticsearch.configuration.ElasticsearchConfiguration</implementation>
+			<scope>singleton</scope>
+		</component>
+        <component>
+			<type>info.magnolia.forge.universalcontent.app.generic.service.LogService</type>
+			<implementation>info.magnolia.forge.universalcontent.app.generic.service.LogServiceImpl</implementation>
+			<scope>singleton</scope>
+		</component>
 		<component>
 			<type>info.magnolia.forge.universalcontent.app.generic.utils.FactoryConverter</type>
 			<implementation>info.magnolia.forge.universalcontent.app.generic.utils.FactoryConverter</implementation>
@@ -56,17 +116,36 @@
 			<implementation>info.magnolia.forge.universalcontent.app.generic.connector.GenericContainer</implementation>
 			<scope>singleton</scope>
 		</component>
+	</components>
+	<components>
+		<id>app-manageES-browser</id>
+		<component>
+			<type>info.magnolia.forge.universalcontent.app.manageES.ElasticSearchModuleCore</type>
+			<implementation>info.magnolia.forge.universalcontent.app.manageES.ElasticSearchModuleCore</implementation>
+			<scope>singleton</scope>
+		</component>
+		<component>
+			<type>info.magnolia.forge.universalcontent.app.custom.interfaces.CustomListenerPresenter</type>
+			<implementation>info.magnolia.forge.universalcontent.app.generic.ui.service.GenericBrowserPresenter</implementation>
+			<scope>singleton</scope>
+		</component>		
+		<component>
+			<type>info.magnolia.forge.universalcontent.app.custom.interfaces.CustomView</type>
+			<implementation>info.magnolia.forge.universalcontent.app.generic.ui.service.GenericViewImpl</implementation>
+			<scope>singleton</scope>
+		</component>
+		<component>
+			<type>info.magnolia.forge.universalcontent.app.custom.interfaces.CustomListenerPresenter</type>
+			<implementation>info.magnolia.forge.universalcontent.app.generic.ui.service.GenericBrowserPresenter</implementation>
+			<scope>singleton</scope>
+		</component>
+		
+		
 		<component>
 			<type>info.magnolia.forge.universalcontent.app.generic.ui.service.UiEventAction</type>
 			<implementation>info.magnolia.forge.universalcontent.app.generic.ui.service.UiEventActionImpl</implementation>
 		</component>
-		<component>
-			<type>info.magnolia.forge.universalcontent.app.generic.connector.FactoryContainer</type>
-			<implementation>info.magnolia.forge.universalcontent.app.generic.connector.FactoryContainer</implementation>
-			<scope>singleton</scope>
-		</component>
-
-
+		
 		<component>
 			<type>info.magnolia.forge.universalcontent.app.event.service.TableEventService</type>
 			<implementation>info.magnolia.forge.universalcontent.app.event.service.TableEventServiceImpl</implementation>
@@ -75,18 +154,12 @@
 			<type>info.magnolia.forge.universalcontent.app.custom.interfaces.Listener</type>
 			<implementation>info.magnolia.forge.universalcontent.app.custom.interfaces.CustomSenderEventManager</implementation>
 		</component>
-		<component>
-			<type>info.magnolia.forge.universalcontent.app.custom.interfaces.CustomTwoColumnView</type>
-			<implementation>info.magnolia.forge.universalcontent.app.generic.ui.service.GenericBrowserViewImpl</implementation>
-			<scope>singleton</scope>
-		</component>
-
+		
 		<component>
 			<type>info.magnolia.forge.universalcontent.app.custom.interfaces.ListSearchViewAppInterface</type>
 			<implementation>info.magnolia.forge.universalcontent.app.generic.ui.service.GenericListViewImpl</implementation>
 			<scope>singleton</scope>
 		</component>
-
 		<component>
 			<type>info.magnolia.forge.universalcontent.app.generic.ui.service.GenericListPresenter</type>
 			<implementation>info.magnolia.forge.universalcontent.app.generic.ui.service.GenericListPresenter</implementation>
@@ -96,14 +169,10 @@
 			<type>info.magnolia.forge.universalcontent.app.generic.ui.dialog.ActionBarService</type>
 			<implementation>info.magnolia.forge.universalcontent.app.generic.ui.dialog.ActionBarServiceImpl</implementation>
 		</component>
+	
 		<component>
-			<type>info.magnolia.forge.universalcontent.app.generic.service.RepositoryService</type>
-			<implementation>info.magnolia.forge.universalcontent.app.generic.service.RepositoryServiceImpl</implementation>
-			<scope>singleton</scope>
-		</component>
-		<component>
-			<type>info.magnolia.forge.universalcontent.app.generic.service.LogService</type>
-			<implementation>info.magnolia.forge.universalcontent.app.generic.service.LogServiceImpl</implementation>
+			<type>info.magnolia.forge.universalcontent.app.custom.interfaces.CustomTwoColumnView</type>
+			<implementation>info.magnolia.forge.universalcontent.app.generic.ui.service.GenericBrowserViewImpl</implementation>
 			<scope>singleton</scope>
 		</component>
 	</components>
