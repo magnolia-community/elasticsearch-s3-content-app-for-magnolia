@@ -2,8 +2,8 @@
 	<name>whitelabel-webapp</name>
 	<displayName>${project.name}</displayName>
 	<description>${project.description}</description>
-	<class>info.magnolia.forge.universalcontent.app.manageES.WhitelabelModuleCoreVersionHandler</class>
-	<versionHandler>info.magnolia.forge.universalcontent.app.manageES.WhitelabelModuleCoreVersionHandler</versionHandler>
+	<class>info.magnolia.forge.universalcontent.app.manageES.ElasticSearchModuleCoreVersionHandler</class>
+	<versionHandler>info.magnolia.forge.universalcontent.app.manageES.ElasticSearchModuleCoreVersionHandler</versionHandler>
 	<version>${project.version}</version>
 	<components>
 		<id>app-manageES-browser</id>
